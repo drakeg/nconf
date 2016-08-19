@@ -4,6 +4,7 @@ if ( empty($_POST["host_id"]) ){
     exit;
 }
 
+GLOBAL $dbh;
 $host_ID = $_POST["host_id"];
 // mark added services
 $added_service[] = !empty($_POST["highlight_service"]) ? $_POST["highlight_service"] : array();
@@ -162,7 +163,7 @@ echo '</table>';
 
 echo '</div>';
 
-mysql_close($dbh);
+mysqli_close($dbh);
 
 
 ?>

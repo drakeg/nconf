@@ -1,6 +1,7 @@
 <?php
 
 require_once 'include/head.php';
+GLOBAL $dbh;
 
 ?>
 
@@ -313,6 +314,6 @@ echo '
     </div>';
 
 
-mysql_close($dbh);
+mysqli_close($dbh);
 require_once 'include/foot.php';
 ?>

@@ -1,6 +1,7 @@
 <?php
 require_once 'include/head.php';
 //set_page();
+GLOBAL $dbh;
 
 echo NConf_HTML::title('Delete class');
 
@@ -80,7 +81,7 @@ if(  ( ( isset($_POST["delete"]) ) AND ($_POST["delete"] == "yes") ) AND
 }
 
 
-mysql_close($dbh);
+mysqli_close($dbh);
 
 require_once 'include/foot.php';
 ?>

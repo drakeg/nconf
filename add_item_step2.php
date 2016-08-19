@@ -1,6 +1,7 @@
 <?php
 require_once 'include/head.php';
 
+GLOBAL $dbh;
 $step2 = "no";
 
 if (DB_NO_WRITES == 1) {
@@ -128,7 +129,7 @@ echo '      </td>
     </table>
 ';
 
-mysql_close($dbh);
+mysqli_close($dbh);
 
 require_once 'include/foot.php';
 ?>

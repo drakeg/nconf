@@ -12,6 +12,7 @@ require_once('config.orig/authentication.php');
 require_once('include/functions.php');
 require_once('include/includeAllClasses.php');
 
+GLOBAL $dbh;
 #
 # Step handling
 #
@@ -255,6 +256,7 @@ function write_config($file, $replacers, $special = ''){
 
 # For creating/importing the database
 function parse_mysql_dump($url){
+    GLOBAL $dbh;
     if (file_exists($url)){
         $file_content = file($url);
         $query = "";
@@ -271,8 +273,8 @@ function parse_mysql_dump($url){
             if(preg_match('/;[\s]*$/', $sql_line)){
               $result = db_handler($query, 'insert', 'running sql statement');
               if (!$result){
-                $sqlErrorCode = mysql_errno();
-                $sqlErrorText = mysql_error();
+                $sqlErrorCode = mysqli_errno($dbh);
+                $sqlErrorText = mysqli_error($dbh);
                 NConf_DEBUG::set($sqlErrorCode, '', $sqlErrorText);
               }
               $query = "";
@@ -368,8 +370,8 @@ if ($step == 0){
     }
 
     # php-mysql support
-    $mysql_status = function_exists('mysql_connect');
-    if (!$mysql_status) message ($error, 'Could not find function "mysql_connect()"<br>You must configure PHP with mysql support.');
+    $mysql_status = function_exists('mysqli_connect');
+    if (!$mysql_status) message ($error, 'Could not find function "mysqli_connect()"<br>You must configure PHP with mysqli support.');
     echo table_row_check('PHP-MySQL support', $mysql_status);
 
     # perl version
@@ -398,11 +400,11 @@ if ($step == 0){
         
     if ($db_check !== FALSE ){
         echo table_row_description('Checks', '');
-        if (function_exists('mysql_connect')){
-            $dbh = @mysql_connect(check_session_value("DBHOST"),check_session_value("DBUSER"),check_session_value("DBPASS"));
+        if (function_exists('mysqli_connect')){
+            $dbh = @mysqli_connect(check_session_value("DBHOST"),check_session_value("DBUSER"),check_session_value("DBPASS"));
             if (!$dbh){
-                # unfortunately mysql_error wont give information about last error here
-                message($error, 'Could not connect: ' . mysql_error());
+                # unfortunately mysqli_error wont give information about last error here
+                message($error, 'Could not connect: ' . mysqli_error($dbh));
                 # php >= 5.2.0 provides additional phperror which could give more information about the last mysql error
                 if ( function_exists('error_get_last') ){
                     $php_error = error_get_last();
@@ -411,7 +413,7 @@ if ($step == 0){
             }
         }else{
             $dbh = FALSE;
-            message($error, '<b>mysql_connect</b> not found, you must install PHP with mysql support!');
+            message($error, '<b>mysqli_connect</b> not found, you must install PHP with mysqli support!');
         }
 
         if (!$dbh){
@@ -420,11 +422,12 @@ if ($step == 0){
             echo table_row_description('', "<br>$msg_error");
         }else{
             echo table_row_check('connect to mysql', TRUE ); 
-            $db_selected = @mysql_select_db(check_session_value("DBNAME"));
+            $db_selected = @mysqli_select_db($dbh, check_session_value("DBNAME"));
             if ($db_selected ){
 
                 # InnoDB support
                 function InnoDB_support(){
+                    GLOBAL $dbh;
                     $engines_query = "SHOW ENGINES;";
                     $engines_array = db_handler($engines_query, "array", "get mysql engines");
                     $InnoDB_support = "UNKNOWN";
@@ -452,7 +455,7 @@ if ($step == 0){
                 # check if tables are set ....
                 //$query = 'SHOW TABLES FROM '.check_session_value("DBNAME");
                 $query = 'SELECT fk_id_item FROM ItemLinks LIMIT 1;';
-                $result = mysql_query($query, $dbh);
+                $result = mysqli_query($dbh, $query);
                 if ($result){
                     # say that db is done, go to next step
                     echo table_row_check('tables were already created', TRUE );
@@ -483,7 +486,8 @@ if ($step == 0){
                         $result = parse_mysql_dump($install_file);
                         if (!$result){
                             echo table_row_check('create tables', FALSE );
-                            echo table_row_description('', 'Error: '.mysql_error() );
+                            GLOBAL $dbh;
+                            echo table_row_description('', 'Error: '.mysqli_error($dbh) );
                         }else{
                             echo table_row_check('create tables', TRUE );
                             # say that next step is the connect db part
@@ -500,7 +504,7 @@ if ($step == 0){
                 echo table_row_check('access database', FALSE ); 
                 # try to create DB
                 $query = 'CREATE DATABASE '.check_session_value("DBNAME").';';
-                $result = mysql_query($query, $dbh);
+                $result = mysqli_query($dbh, $query);
                 if ($result){
                     echo table_row_check('created database', TRUE );
                 }else{

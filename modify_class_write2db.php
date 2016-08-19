@@ -1,5 +1,6 @@
 <?php
    require_once 'include/head.php';
+   GLOBAL $dbh;
 
    // delay normaly short (given from config)
    // but if there is a special message, the message should be read, so put the delay few seconds higher
@@ -148,6 +149,6 @@
         }
     }
 
-   mysql_close($dbh);
+   mysqli_close($dbh);
    require_once 'include/foot.php';
 ?>

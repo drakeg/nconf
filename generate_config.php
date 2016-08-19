@@ -1,5 +1,6 @@
 <?php
 require_once 'include/head.php';
+GLOBAL $dbh;
 
 $lock_file = 'temp/generate.lock';
 $status = check_file('file_exists', $lock_file, TRUE, "File/Directory still exists, please remove it: "); 
@@ -145,7 +146,7 @@ $status = flock($generate_lock_handle, LOCK_EX | LOCK_NB); //lock the file
 
 <?php
 
-//mysql_close($dbh);
+//mysqli_close($dbh);
 require_once 'include/foot.php';
 
 ?>

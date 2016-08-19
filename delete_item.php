@@ -1,6 +1,7 @@
 <?php
 require_once 'include/head.php';
 
+GLOBAL $dbh;
 
 if (DB_NO_WRITES == 1) {
     message($info, TXT_DB_NO_WRITES);
@@ -76,7 +77,7 @@ if(  ( ( isset($_POST["delete"]) ) AND ($_POST["delete"] == "yes") ) AND
         $result = db_handler($query, "result", "Delete entry");
         if ( $result ){
             # increase deleted items
-            if (mysql_affected_rows() > 0){
+            if (mysqli_affected_rows($dbh) > 0){
                 $deleted_items++;
             }
 
@@ -211,7 +212,7 @@ if(  ( ( isset($_POST["delete"]) ) AND ($_POST["delete"] == "yes") ) AND
             $result = db_handler($get_srv_query, "result", "get services linked to host");
             # prepare services
             $services = array();
-            while($entry = mysql_fetch_assoc($result)){
+            while($entry = mysqli_fetch_assoc($result)){
                 $services[] = array(
                             "id" => $entry["item_id"],
                             "name" => $entry["attr_value"],
@@ -306,7 +307,7 @@ if ( NConf_DEBUG::status('ERROR') ) {
 
 
 
-mysql_close($dbh);
+mysqli_close($dbh);
 
 require_once 'include/foot.php';
 ?>

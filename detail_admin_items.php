@@ -2,6 +2,7 @@
 
 require_once 'include/head.php';
 //set_page();
+GLOBAL $dbh;
 
 # Get ID
 if ( !empty($_REQUEST["id"]) ){
@@ -160,7 +161,7 @@ echo '<div style="position: absolute; min-width: 350px;">';
 
     echo '</div>';
 
-mysql_close($dbh);
+mysqli_close($dbh);
 require_once 'include/foot.php';
 
 ?>

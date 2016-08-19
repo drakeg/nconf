@@ -365,6 +365,7 @@ class NConf_HTML{
 
     // End the page with error message
     public static function exit_error(){
+        GLOBAL $dbh;
         if ( self::status('ERROR') ) {
             echo self::limit_space( self::show_error() );
             if ( !empty($_SESSION["after_delete_page"]) ){
@@ -376,7 +377,7 @@ class NConf_HTML{
         include('include/foot.php');
 
         if ( isset($dbh) ){
-            mysql_close($dbh);
+            mysqli_close($dbh);
         }
 
         exit;

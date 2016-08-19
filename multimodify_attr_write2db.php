@@ -1,5 +1,6 @@
 <?php
 require_once 'include/head.php';
+GLOBAL $dbh;
 ?>
 
 <!-- jQuery part -->
@@ -109,8 +110,8 @@ if ( ( isset($oncall_check) AND $oncall_check === FALSE )
     	$_SESSION["cache"]["handle"][$key] = $value;
     }
                 
-
-    mysql_close($dbh);
+	GLOBAL $dbh;
+    mysqli_close($dbh);
     require_once 'include/foot.php';
 
     exit;
@@ -184,7 +185,7 @@ foreach ($array_ids as $id){
                 # Vererben ?
                 if ( isset($vererben1) ) unset($vererben1);
                 $vererben1_result = db_templates("vererben", $id);
-                while($row = mysql_fetch_assoc($vererben1_result)){
+                while($row = mysqli_fetch_assoc($vererben1_result)){
                     $vererben1[$row["item_id"]] = $row["attr_name"];
                 }
             }
@@ -215,7 +216,7 @@ foreach ($array_ids as $id){
                 # Vererben ?
                 if ( isset($vererben2) ) unset($vererben2);
                 $vererben2_result = db_templates("vererben", $id);
-                while($row = mysql_fetch_assoc($vererben2_result)){
+                while($row = mysqli_fetch_assoc($vererben2_result)){
                     $vererben2[$row["item_id"]] = $row["attr_name"];
                 }
                 if ($vererben1 !== $vererben2) {
@@ -408,7 +409,6 @@ echo '</div>';
 
 
 
-
-mysql_close($dbh);
+mysqli_close($dbh);
 require_once 'include/foot.php';
 ?>

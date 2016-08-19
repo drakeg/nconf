@@ -1,6 +1,7 @@
 <?php
 require_once 'include/head.php';
 
+GLOBAL $dbh;
 if ( isset($_SESSION["cache"]["clone"]) ) unset($_SESSION["cache"]["clone"]);
 
 if (DB_NO_WRITES == 1) {
@@ -16,14 +17,14 @@ $query = 'SELECT fk_id_item,attr_value FROM ConfigValues,ConfigAttrs,ConfigClass
                     AND config_class="host"
             AND attr_value = "'.$_POST["hostname"].'"';
 
-$result = mysql_query($query);
+$result = mysqli_query($dbh, $query);
         
 #############
 # Entry exists ?
-if (mysql_num_rows($result)){
+if (mysqli_num_rows($result)){
     echo 'Entry with name &quot;'.$_POST["hostname"].'&quot; already exists!';
     echo '<br><br>Click for details: ';
-    while($entry = mysql_fetch_assoc($result)){
+    while($entry = mysqli_fetch_assoc($result)){
         echo '<a href="detail.php?id='.$entry["fk_id_item"].'">'.$entry["attr_value"].'</a>';
     }
     echo '<br><br>or go <a href="javascript:history.go(-1)">back</a>';
@@ -333,7 +334,7 @@ if (mysql_num_rows($result)){
 } // END Entry exists ?
 
 
-mysql_close($dbh);
+mysqli_close($dbh);
 
 require_once 'include/foot.php';
 ?>

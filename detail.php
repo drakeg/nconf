@@ -1,6 +1,7 @@
 <?php
 require_once 'include/head.php';
 
+GLOBAL $dbh;
 
 ?>
 
@@ -467,7 +468,7 @@ function apply_template(&$template_cache, $template_id){
 
 
 
-mysql_close($dbh);
+mysqli_close($dbh);
 require_once 'include/foot.php';
 
 ?>
